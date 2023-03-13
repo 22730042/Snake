@@ -11,6 +11,7 @@ class Game {
         this.board_border = board_border;
         this.board_background = board_background;
         this.snake_border = snake_border;
+        this.point = 0;
     }
 
     setUpSnake(length, x, y) {
@@ -87,8 +88,8 @@ class Game {
         while (!flag) {
             xRand = Math.floor(Math.random() * (this.snakeboard.width + 1));
             yRand = Math.floor(Math.random() * (this.snakeboard.height + 1));
-            xRand = xRand == this.snakeboard.width ? xRand - 5 : (xRand == 0 ? xRand + 5 : xRand);
-            yRand = yRand == this.snakeboard.height ? yRand - 5 : (yRand == 0 ? yRand + 3 : yRand);
+            xRand = (xRand + 5) >= this.snakeboard.width ? this.snakeboard.width - 5 : (xRand == 0 ? 5 : parseInt(xRand / 5) * 5);
+            yRand = (yRand + 5) >= this.snakeboard.height ? this.snakeboard.height - 5 : (yRand == 0 ? 5 : parseInt(yRand / 5) * 5);
             let existData = false;
             for (let i = 0; i < this.snake.length; i++) {
                 if (xRand == (this.snake[i].x + 10) ||
@@ -152,13 +153,18 @@ class Game {
         // for (let i = 4; i < this.snake.length; i++) {
         //     if (this.snake[i].x === this.snake[0].x && this.snake[i].y === this.snake[0].y) return true
         // }
+        const snakeX = this.snake[0].x;
+        const snakeY = this.snake[0].y;
         for (let i = 0; i < this.snake.length; i++) {
+            if (i != 0 && snakeX == this.snake[i]?.x && snakeY == this.snake[i]?.y)
+                return true;
             const hitLeftWall = this.snake[i].x < 0;
             const hitRightWall = this.snake[i].x > this.snakeboard.width - 10;
             const hitToptWall = this.snake[i].y < 0;
             const hitBottomWall = this.snake[i].y > this.snakeboard.height - 10;
             this.backMove(this.snake[i], hitLeftWall, hitRightWall, hitToptWall, hitBottomWall);
         }
+
         // const hitLeftWall = this.snake[0].x <= 0;
         // const hitRightWall = this.snake[0].x >= this.snakeboard.width - 10;
         // const hitToptWall = this.snake[0].y <= 0;
@@ -213,6 +219,23 @@ class Game {
     }
 
     calculatorPoint() {
-
+        const xSnake = this.snake[0].x;
+        const ySnake = this.snake[0].y;
+        let index = null;
+        for (let i = 0; i < this.bounds.length; i++) {
+            if (((this.bounds[i]?.x + 7) >= xSnake && (this.bounds[i]?.x - 7) <= xSnake) && ((this.bounds[i]?.y + 7) >= ySnake && (this.bounds[i]?.y - 7) <= ySnake)) {
+                index = i;
+                this.point += this.bounds[i]?.point;
+                break;
+            }
+        }
+        if (index != null) {
+            this.bounds = this.bounds.filter((v, i) => i != index);
+            const key = this.snake.length - 1;
+            this.snake.push({
+                x: this.snake[key]?.x - 10,
+                y: this.snake[key]?.y - 10,
+            })
+        }
     }
 }
