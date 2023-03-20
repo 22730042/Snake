@@ -208,16 +208,16 @@ class Game {
                 return true;
             if (this.mode == 1) {
                 const hitLeftWall = this.snake[i].x < 0;
-                const hitRightWall = this.snake[i].x > this.snakeboard.width;
+                const hitRightWall = this.snake[i].x > this.snakeboard.width - 20;
                 const hitToptWall = this.snake[i].y < 0;
-                const hitBottomWall = this.snake[i].y > this.snakeboard.height;
+                const hitBottomWall = this.snake[i].y > this.snakeboard.height - 20;
                 this.backMove(this.snake[i], hitLeftWall, hitRightWall, hitToptWall, hitBottomWall);
             }
         }
         if (this.mode == 2) {
-            const hitLeftWall = this.snake[0].x <= 0;
+            const hitLeftWall = this.snake[0].x < 0;
             const hitRightWall = this.snake[0].x >= this.snakeboard.width;
-            const hitToptWall = this.snake[0].y <= 0;
+            const hitToptWall = this.snake[0].y < 0;
             const hitBottomWall = this.snake[0].y >= this.snakeboard.height;
             return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall;
         }
