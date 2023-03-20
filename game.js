@@ -17,6 +17,7 @@ class Game {
         this.randomColor = "#3498db"
         this.point = 0;
         this.count = 60;
+        document.addEventListener("keydown", this.changeDirection.bind(this));
     }
 
     setUpSnake(length, x, y) {
@@ -29,7 +30,6 @@ class Game {
             });
             data_x -= 20;
         }
-        document.addEventListener("keydown", this.changeDirection.bind(this));
         return this;
     }
 
@@ -146,20 +146,16 @@ class Game {
             yRand = (yRand + 10) >= this.snakeboard.height ? this.snakeboard.height - 10 : (y <= 0 ? 10 : y);
             let existData = false;
             for (let i = 0; i < this.snake.length; i++) {
-                if (xRand == (this.snake[i].x + 20) ||
-                    xRand == (this.snake[i].x - 20) ||
-                    yRand == (this.snake[i].y + 20) ||
-                    yRand == (this.snake[i].y - 20)) {
+                if (xRand == (this.snake[i].x + 10) &&
+                    yRand - 10 == (this.snake[i].y)) {
                     existData = true;
                     break;
                 }
             }
 
             for (let i = 0; i < this.bounds.length; i++) {
-                if (xRand == (this.bounds[i].x + 20) ||
-                    xRand == (this.bounds[i].x - 20) ||
-                    yRand == (this.bounds[i].y + 20) ||
-                    yRand == (this.bounds[i].y - 20)) {
+                if (xRand == this.bounds[i].x &&
+                    yRand == this.bounds[i].y) {
                     existData = true;
                     break;
                 }
@@ -190,7 +186,6 @@ class Game {
         this.snakeboard_ctx.fillStyle = color;
         // Set the border colour of the snake part
         this.snakeboard_ctx.strokestyle = this.snake_border;
-        // Draw a "filled" rectangle to represent the snake part at the coordinates
         // the part is located
         this.snakeboard_ctx.fillRect(snakePart.x, snakePart.y, 20, 20);
         // Draw a border around the snake part
@@ -206,9 +201,6 @@ class Game {
     }
 
     checkGame() {
-        // for (let i = 4; i < this.snake.length; i++) {
-        //     if (this.snake[i].x === this.snake[0].x && this.snake[i].y === this.snake[0].y) return true
-        // }
         const snakeX = this.snake[0].x;
         const snakeY = this.snake[0].y;
         for (let i = 0; i < this.snake.length; i++) {
@@ -216,17 +208,17 @@ class Game {
                 return true;
             if (this.mode == 1) {
                 const hitLeftWall = this.snake[i].x < 0;
-                const hitRightWall = this.snake[i].x > this.snakeboard.width - 20;
+                const hitRightWall = this.snake[i].x > this.snakeboard.width;
                 const hitToptWall = this.snake[i].y < 0;
-                const hitBottomWall = this.snake[i].y > this.snakeboard.height - 20;
+                const hitBottomWall = this.snake[i].y > this.snakeboard.height;
                 this.backMove(this.snake[i], hitLeftWall, hitRightWall, hitToptWall, hitBottomWall);
             }
         }
         if (this.mode == 2) {
             const hitLeftWall = this.snake[0].x <= 0;
-            const hitRightWall = this.snake[0].x >= this.snakeboard.width - 20;
+            const hitRightWall = this.snake[0].x >= this.snakeboard.width;
             const hitToptWall = this.snake[0].y <= 0;
-            const hitBottomWall = this.snake[0].y >= this.snakeboard.height - 20;
+            const hitBottomWall = this.snake[0].y >= this.snakeboard.height;
             return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall;
         }
         else
